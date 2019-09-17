@@ -5,7 +5,7 @@
 resource "aws_security_group" "eks-node" {
   name        = "${var.project}-${var.env}-eks-node-${var.node_group_name}"
   description = "Security group for all nodes in the cluster"
-  vpc_id      = aws_vpc.eks.id
+  vpc_id      = var.vpc_id
 
   egress {
     from_port   = 0
@@ -57,16 +57,16 @@ resource "aws_security_group_rule" "eks-cluster-ingress-node-https" {
 #
 
 locals {
-  node_tags =  concat([
-            for tag in keys(local.merged_tags):
-               { "Key" = tag, "Value" = local.merged_tags[tag], "PropagateAtLaunch" = "true" }
-          ],
-          [
-               { "Key" = "Name", "Value" = "${var.project}-${var.env}-eks-node-${var.node_group_name}", "PropagateAtLaunch" = "true" },
-               { "Key" = "role", "Value" = "eks-node", "PropagateAtLaunch" = "true" }
-               { "Key" = "kubernetes.io/cluster/${var.cluster_name}", "Value" = "owned", "PropagateAtLaunch" = "true" }
-               { "Key" = "kubernetes.io/cluster/name", "Value" = "${var.node_group_name}", "PropagateAtLaunch" = "true" }
-          ])
+  node_tags = concat([
+    for tag in keys(local.merged_tags) :
+    { "Key" = tag, "Value" = local.merged_tags[tag], "PropagateAtLaunch" = "true" }
+    ],
+    [
+      { "Key" = "Name", "Value" = "${var.project}-${var.env}-eks-node-${var.node_group_name}", "PropagateAtLaunch" = "true" },
+      { "Key" = "role", "Value" = "eks-node", "PropagateAtLaunch" = "true" },
+      { "Key" = "kubernetes.io/cluster/${var.cluster_name}", "Value" = "owned", "PropagateAtLaunch" = "true" },
+      { "Key" = "kubernetes.io/cluster/name", "Value" = "${var.node_group_name}", "PropagateAtLaunch" = "true" }
+  ])
 }
 
 # More information: https://docs.aws.amazon.com/eks/latest/userguide/launch-workers.html
@@ -119,7 +119,7 @@ resource "aws_launch_template" "eks-node" {
   }
 
   iam_instance_profile {
-    name = var.node_instance_profile_name
+    name = var.node_iam_instance_profile_name
   }
 
   tags = merge(local.merged_tags, {

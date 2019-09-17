@@ -23,7 +23,7 @@ resource "aws_security_group" "eks-cluster" {
 
 # Allow inbound traffic from external IPs to the Kubernetes API.
 resource "aws_security_group_rule" "eks-cluster-ingress-external-ips-https" {
-  cidr_blocks       = [var.control_plane_allowed_ips]
+  cidr_blocks       = var.control_plane_allowed_ips
   description       = "Allow external IPs to communicate with the cluster API Server"
   from_port         = 443
   protocol          = "tcp"
@@ -47,7 +47,7 @@ resource "aws_eks_cluster" "eks-cluster" {
       aws_security_group.eks-cluster.id,
       var.metrics_sg_allow
     ]
-    subnet_ids = var.poublic_subnets_ids
+    subnet_ids = var.public_subnets_ids
   }
 
   depends_on = [

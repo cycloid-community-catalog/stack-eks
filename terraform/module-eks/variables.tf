@@ -9,7 +9,7 @@ data "aws_availability_zones" "available" {
 }
 
 variable "aws_zones" {
-  description = "To use specific AWS Availability Zones." 
+  description = "To use specific AWS Availability Zones."
   default     = []
 }
 
@@ -58,7 +58,7 @@ variable "public_subnets_ids" {
 }
 
 variable "metrics_sg_allow" {
-  description = "Metrics Security Group ID to allow prometheus scraping." 
+  description = "Metrics Security Group ID to allow prometheus scraping."
   default     = ""
 }
 
@@ -78,4 +78,9 @@ variable "cluster_version" {
 variable "cluster_enabled_log_types" {
   description = "EKS Cluster log types to forward to CloudWatch."
   default     = ["api", "audit", "authenticator", "controllerManager", "scheduler"]
+}
+
+variable "control_plane_allowed_ips" {
+  description = "Allow Inbound IP CIDRs to access the Kubernetes API."
+  default     = []
 }

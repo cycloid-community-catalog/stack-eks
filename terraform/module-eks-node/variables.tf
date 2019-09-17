@@ -9,7 +9,7 @@ data "aws_availability_zones" "available" {
 }
 
 variable "aws_zones" {
-  description = "To use specific AWS Availability Zones." 
+  description = "To use specific AWS Availability Zones."
   default     = []
 }
 
@@ -63,12 +63,12 @@ variable "private_subnets_ids" {
 }
 
 variable "bastion_sg_allow" {
-  description = "Bastion Security Group ID to allow SSH access on EKS nodes." 
+  description = "Bastion Security Group ID to allow SSH access on EKS nodes."
   default     = ""
 }
 
 variable "metrics_sg_allow" {
-  description = "Metrics Security Group ID to allow prometheus scraping on EKS nodes." 
+  description = "Metrics Security Group ID to allow prometheus scraping on EKS nodes."
   default     = ""
 }
 
@@ -78,6 +78,10 @@ variable "metrics_sg_allow" {
 
 variable "cluster_name" {
   description = "EKS Cluster given name."
+}
+
+variable "cluster_version" {
+  description = "EKS Cluster version for EKS nodes AMI"
 }
 
 variable "control_plane_sg_id" {
@@ -97,7 +101,7 @@ variable "control_plane_ca" {
 #
 
 variable "node_iam_instance_profile_name" {
-  description = "EKS nodes IAM instance profile name." 
+  description = "EKS nodes IAM instance profile name."
 }
 
 variable "node_group_name" {
@@ -126,8 +130,8 @@ variable "node_asg_max_size" {
 }
 
 variable "node_update_min_in_service" {
-  description = "Minimum EKS nodes in service during Auto Scaling Group rolling update." 
-  default = 1
+  description = "Minimum EKS nodes in service during Auto Scaling Group rolling update."
+  default     = 1
 }
 
 variable "node_associate_public_ip_address" {

@@ -1,25 +1,40 @@
-output "eks_control_plane_sg_id" {
+output "cluster_name" {
+  description = "EKS Cluster name."
+  value       = aws_eks_cluster.eks-cluster.id
+}
+
+output "cluster_version" {
+  description = "EKS Cluster version."
+  value       = aws_eks_cluster.eks-cluster.version
+}
+
+output "cluster_platform_version" {
+  description = "EKS Cluster plateform version."
+  value       = aws_eks_cluster.eks-cluster.platform_version
+}
+
+output "control_plane_sg_id" {
   description = "EKS Cluster Security Group ID."
   value       = aws_security_group.eks-cluster.id
 }
 
-output "eks_control_plane_endpoint" {
+output "control_plane_endpoint" {
   description = "EKS Cluster endpoint."
   value       = aws_eks_cluster.eks-cluster.endpoint
 }
 
-output "eks_control_plane_ca" {
+output "control_plane_ca" {
   description = "EKS Cluster certificate authority."
   value       = aws_eks_cluster.eks-cluster.certificate_authority.0.data
 }
 
-output "eks_node_iam_role_arn" {
+output "node_iam_role_arn" {
   description = "EKS nodes IAM role ARN."
   value       = aws_iam_role.eks-node.arn
 }
 
-output "eks_node_iam_instance_profile_name" {
-  description = "EKS nodes IAM instance profile name." 
+output "node_iam_instance_profile_name" {
+  description = "EKS nodes IAM instance profile name."
   value       = aws_iam_instance_profile.eks-node.name
 }
 

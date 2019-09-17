@@ -1,6 +1,6 @@
 # Put here a custom name for the EKS Cluster
 # Otherwise `${var.project}-${var.env}` will be used
-locals { 
+locals {
   cluster_name = "ci-stack-eks"
 }
 
@@ -20,16 +20,16 @@ module "vpc" {
   # Do not modify the following lines #
   source = "./module-vpc"
 
-  project            = var.project
-  env                = var.env
-  customer           = var.customer
+  project  = var.project
+  env      = var.env
+  customer = var.customer
 
   #####################################
 
   ###
   # General
   ###
-  
+
   #. aws_zones (optional): {}
   #+ To use specific AWS Availability Zones.
 
@@ -60,21 +60,8 @@ module "vpc" {
   #+ Should be true if you want to provision an S3 endpoint to the VPC
   #enable_s3_endpoint = false
 
-  #. external_vpc_to_peer (optional, list): []
-  #+ List of external VPC to peer to the dedicated VPC created in this stack
-  # external_vpc_to_peer = [
-  #   {
-  #     id                                      = "vpc-xxxx",
-  #     name                                    = "infra",
-  #     cidr                                    = "x.x.0.0/16"
-  #     private_route_table_ids                 = [],
-  #     public_route_table_ids                  = [],
-  #     associate_to_dedicated_vpc_private_zone = true
-  #   }
-  # ]
-
   #. bastion_sg_id (optional):
-  #+ Security Group ID of the bastion to allow SSH access. Make sure the bastion VPC is peered with `external_vpc_to_peer` variable
+  #+ Security Group ID of the bastion to allow SSH access. Make sure the bastion VPC is peered.
 
   ###
   # Required (should probably not be touched)
@@ -88,9 +75,9 @@ module "eks" {
   # Do not modify the following lines #
   source = "./module-eks"
 
-  project            = var.project
-  env                = var.env
-  customer           = var.customer
+  project  = var.project
+  env      = var.env
+  customer = var.customer
 
   #####################################
 
@@ -110,15 +97,15 @@ module "eks" {
 
   #. vpc_id (required):
   #+ Amazon VPC id on which create each components.
-  vpc_id = module.vpc.outputs.vpc_id
+  vpc_id = module.vpc.vpc_id
 
   #. public_subnets_ids (required, array):
   #+ Amazon subnets IDs on which create each components.
-  public_subnets_ids = module.vpc.outputs.public_subnets
+  public_subnets_ids = module.vpc.public_subnets
 
   #. metrics_sg_allow (optional): ""
-  #+ Additionnal security group ID to assign to servers. Goal is to allow monitoring server to query metrics.
-  metrics_sg_allow = "<prometheus-sg>"
+  #+ Additionnal security group ID to assign to servers. Goal is to allow monitoring server to query metrics. Make sure the prometheus VPC is peered.
+  #metrics_sg_allow = "<prometheus-sg>"
 
   ###
   # Control plane
@@ -134,7 +121,7 @@ module "eks" {
   ###
   # Required (should probably not be touched)
   ###
-  
+
   cluster_name = local.eks_cluster_name
 }
 
@@ -145,9 +132,9 @@ module "eks-node" {
   # Do not modify the following lines #
   source = "./module-eks-node"
 
-  project            = var.project
-  env                = var.env
-  customer           = var.customer
+  project  = var.project
+  env      = var.env
+  customer = var.customer
 
   #####################################
 
@@ -171,19 +158,19 @@ module "eks-node" {
 
   #. vpc_id (required):
   #+ Amazon VPC id on which create each components.
-  vpc_id = module.vpc.outputs.vpc_id
+  vpc_id = module.vpc.vpc_id
 
   #. private_subnets_ids (required, array):
   #+ Amazon subnets IDs on which create each components.
-  private_subnets_ids = module.vpc.outputs.private_subnets
+  private_subnets_ids = module.vpc.private_subnets
 
   #. bastion_sg_allow (optional):
-  #+ Amazon source security group ID which will be allowed to connect on nodes port 22 (SSH).
-  bastion_sg_allow = module.vpc.outputs.bastion_sg_allow
+  #+ Amazon source security group ID which will be allowed to connect on nodes port 22 (SSH). Only if module.vpc.bastion_sg_id variable is set.
+  #bastion_sg_allow = module.vpc.bastion_sg_allow
 
   #. metrics_sg_allow (optional): ""
-  #+ Additionnal security group ID to assign to servers. Goal is to allow monitoring server to query metrics.
-  metrics_sg_allow = "<prometheus-sg>"
+  #+ Additionnal security group ID to assign to servers. Goal is to allow monitoring server to query metrics. Make sure the prometheus VPC is peered.
+  #metrics_sg_allow = "<prometheus-sg>"
 
   ###
   # Nodes
@@ -211,9 +198,10 @@ module "eks-node" {
   # Required (should probably not be touched)
   ###
 
-  cluster_name                   = local.eks_cluster_name
-  node_iam_instance_profile_name = module.eks.outputs.eks_node_iam_instance_profile_name
-  control_plane_sg_id            = module.eks.outputs.eks_control_plane_sg_id
-  control_plane_endpoint         = module.eks.outputs.eks_control_plane_endpointlemp
-  control_plane_ca               = module.eks.outputs.eks_control_plane_ca
+  cluster_name                   = module.eks.cluster_name
+  cluster_version                = module.eks.cluster_version
+  node_iam_instance_profile_name = module.eks.node_iam_instance_profile_name
+  control_plane_sg_id            = module.eks.control_plane_sg_id
+  control_plane_endpoint         = module.eks.control_plane_endpoint
+  control_plane_ca               = module.eks.control_plane_ca
 }

@@ -6,15 +6,14 @@ keywords:
   - 'kubernetes'
   - 'eks'
   - 'aws'
+author: 'Cycloid'
+image: 'https://raw.githubusercontent.com/cycloid-community-catalog/stack-eks/master/icon.png'
+type: 'stack'
 technologies:
   - technology: Amazon Elastic Kubernetes Service
     version: 1.14.6
   - technology: Amazon EKS-Optimized AMI
     version: 1.14.6
-
-author: 'Cycloid'
-image: 'https://raw.githubusercontent.com/cycloid-community-catalog/stack-eks/master/icon.png'
-type: 'stack'
 config:
   # Configuration of the CI pipeline
   pipeline:
@@ -25,6 +24,6 @@ config:
 
   # Configuration of terraform to setup the infrastructure
   terraform:
-    lemp:
+    eks:
       path: 'terraform/eks.tf.sample'
       destination: '($ project $)/terraform/($ environment $)/eks.tf'

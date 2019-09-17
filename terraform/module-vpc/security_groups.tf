@@ -5,7 +5,7 @@ resource "aws_security_group" "allow_bastion" {
   description = "Allow SSH traffic from the bastion to the EKS env"
   vpc_id      = module.aws-vpc.vpc_id
 
-  ingress = {
+  ingress {
     from_port       = 22
     to_port         = 22
     protocol        = "tcp"
@@ -13,7 +13,7 @@ resource "aws_security_group" "allow_bastion" {
     self            = false
   }
 
-  egress = {
+  egress {
     from_port   = 0
     to_port     = 0
     protocol    = "-1"

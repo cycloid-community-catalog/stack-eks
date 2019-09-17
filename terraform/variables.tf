@@ -27,5 +27,5 @@ variable "aws_region" {
 
 # EKS
 locals {
-    eks_cluster_name = length(local.cluster_name) > 0 ? local.cluster_name : "${var.project}-${var.env}"
+  eks_cluster_name = length(local.cluster_name) > 0 ? local.cluster_name : "${var.project}-${var.env}"
 }

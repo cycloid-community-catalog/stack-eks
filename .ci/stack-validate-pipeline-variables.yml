@@ -82,7 +82,7 @@ stack_pipeline_path: pipeline
 #+ Name of the project's environment.
 env: master
 
-#. project (required): ci-stack-lemp
+#. project (required): ci-stack-eks
 #+ Name of the project.
 project: ci-stack-eks
 

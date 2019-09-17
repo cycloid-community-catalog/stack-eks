@@ -9,7 +9,7 @@ data "aws_availability_zones" "available" {
 }
 
 variable "aws_zones" {
-  description = "To use specific AWS Availability Zones." 
+  description = "To use specific AWS Availability Zones."
   default     = []
 }
 
@@ -71,25 +71,6 @@ variable "single_nat_gateway" {
 variable "one_nat_gateway_per_az" {
   description = "Should be true if you want only one NAT Gateway per availability zone. Requires `var.aws_zones` to be set, and the number of `public_subnets` created to be greater than or equal to the number of availability zones specified in `var.aws_zones`."
   default     = false
-}
-
-#
-# Peering with external VPCs
-#
-
-# external_vpc_to_peer = [
-#   {
-#     id                                      = "vpc-xxxx",
-#     name                                    = "infra",
-#     cidr                                    = "x.x.0.0/16"
-#     private_route_table_ids                 = [],
-#     public_route_table_ids                  = [],
-#     associate_to_dedicated_vpc_private_zone = true
-#   }
-# ]
-variable "external_vpc_to_peer" {
-  description = "List of external VPC to peer to the dedicated VPC created in this stack."
-  default     = []
 }
 
 variable "bastion_sg_id" {
