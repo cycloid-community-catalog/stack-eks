@@ -1,0 +1,30 @@
+# Configuration of the CI pipeline
+name: 'Amazon EKS'
+canonical: 'stack-eks'
+description: 'Used to deploy an Amazon Elastic Kubernetes Service cluster with one or more node groups.'
+keywords:
+  - 'kubernetes'
+  - 'eks'
+  - 'aws'
+technologies:
+  - technology: Amazon Elastic Kubernetes Service
+    version: 1.14.6
+  - technology: Amazon EKS-Optimized AMI
+    version: 1.14.6
+
+author: 'Cycloid'
+image: 'https://raw.githubusercontent.com/cycloid-community-catalog/stack-eks/master/icon.png'
+type: 'stack'
+config:
+  # Configuration of the CI pipeline
+  pipeline:
+    pipeline:
+      path: 'pipeline/pipeline.yml'
+    variables:
+      path: 'pipeline/variables.sample.yml'
+
+  # Configuration of terraform to setup the infrastructure
+  terraform:
+    lemp:
+      path: 'terraform/eks.tf.sample'
+      destination: '($ project $)/terraform/($ environment $)/eks.tf'

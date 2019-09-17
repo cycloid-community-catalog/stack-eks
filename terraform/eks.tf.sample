@@ -1,0 +1,219 @@
+# Put here a custom name for the EKS Cluster
+# Otherwise `${var.project}-${var.env}` will be used
+locals { 
+  cluster_name = ""
+}
+
+# By default this stack will create a dedicated VPC for the EKS Cluster
+# as the default pod networking will be using this VPC and
+# as some specific VPC and subnets tagging is required.
+# @See:
+# - https://docs.aws.amazon.com/eks/latest/userguide/network_reqs.html
+# - https://docs.aws.amazon.com/eks/latest/userguide/pod-networking.html
+#
+# If you want to manage the VPC used by the EKS Cluster elsewhere, comment
+# the following `vpc` module and change all `module.vpc.` references to
+# the matching required informations from your own setup.
+#
+module "vpc" {
+  #####################################
+  # Do not modify the following lines #
+  source = "./module-vpc"
+
+  project            = var.project
+  env                = var.env
+  customer           = var.customer
+
+  #####################################
+
+  ###
+  # General
+  ###
+  
+  #. aws_zones (optional): {}
+  #+ To use specific AWS Availability Zones.
+
+  #. extra_tags (optional): {}
+  #+ Dict of extra tags to add on aws resources. format { "foo" = "bar" }.
+
+  ###
+  # Networking
+  ###
+
+  #. vpc_cidr: 10.8.0.0/16
+  #+ The CIDR of the VPC.
+  vpc_cidr = "10.8.0.0/16"
+
+  #. private_subnets (optional, list): ["10.8.0.0/24", "10.8.2.0/24", "10.8.4.0/24"]
+  #+ The private subnets for the VPC.
+  private_subnets = ["10.8.0.0/24", "10.8.2.0/24", "10.8.4.0/24"]
+
+  #. public_subnets (optional, list): ["10.8.1.0/24", "10.8.3.0/24", "10.8.5.0/24"]
+  #+ The public subnets for the VPC.
+  public_subnets = ["10.8.1.0/24", "10.8.3.0/24", "10.8.5.0/24"]
+
+  #. enable_dynamodb_endpoint (optional, bool): false
+  #+ Should be true if you want to provision a DynamoDB endpoint to the VPC.
+  #enable_dynamodb_endpoint = false
+
+  #. enable_s3_endpoint (optional, bool): false
+  #+ Should be true if you want to provision an S3 endpoint to the VPC.
+  #enable_s3_endpoint = false
+
+  #. external_vpc_to_peer (optional, list): []
+  #+ List of external VPC to peer to the dedicated VPC created in this stack.
+  # external_vpc_to_peer = [
+  #   {
+  #     id                                      = "vpc-xxxx",
+  #     name                                    = "infra",
+  #     cidr                                    = "x.x.0.0/16"
+  #     private_route_table_ids                 = [],
+  #     public_route_table_ids                  = [],
+  #     associate_to_dedicated_vpc_private_zone = true
+  #   }
+  # ]
+
+  #. bastion_sg_id (optional):
+  #+ Security Group ID of the bastion to allow SSH access. Make sure the bastion VPC is peered with `external_vpc_to_peer` variable.
+
+  ###
+  # Required (should probably not be touched)
+  ###
+
+  cluster_name = local.eks_cluster_name
+}
+
+module "eks" {
+  #####################################
+  # Do not modify the following lines #
+  source = "./module-eks"
+
+  project            = var.project
+  env                = var.env
+  customer           = var.customer
+
+  #####################################
+
+  ###
+  # General
+  ###
+
+  #. aws_zones (optional): {}
+  #+ To use specific AWS Availability Zones.
+
+  #. extra_tags (optional): {}
+  #+ Dict of extra tags to add on aws resources. format { "foo" = "bar" }.
+
+  ###
+  # Networking
+  ###
+
+  #. vpc_id (required):
+  #+ Amazon VPC id on which create each components.
+  vpc_id = module.vpc.outputs.vpc_id
+
+  #. public_subnets_ids (required, array):
+  #+ Amazon subnets IDs on which create each components.
+  public_subnets_ids = module.vpc.outputs.public_subnets
+
+  #. metrics_sg_allow (optional): ""
+  #+ Additionnal security group ID to assign to servers. Goal is to allow monitoring server to query metrics.
+  metrics_sg_allow = "<prometheus-sg>"
+
+  ###
+  # Control plane
+  ###
+
+  #. cluster_version (optional): 1.14.6
+  #+ EKS cluster version.
+  cluster_version = "1.14.6"
+
+  #. cluster_enabled_log_types (optional): ["api", "audit", "authenticator", "controllerManager", "scheduler"]
+  #+ EKS cluster enabled log types.
+
+  ###
+  # Required (should probably not be touched)
+  ###
+  
+  cluster_name = local.eks_cluster_name
+}
+
+# You can duplicate this module to create mutiple EKS node groups.
+# Make sure to change the `node_group_name` field accordingly.
+module "eks-node" {
+  #####################################
+  # Do not modify the following lines #
+  source = "./module-eks-node"
+
+  project            = var.project
+  env                = var.env
+  customer           = var.customer
+
+  #####################################
+
+  ###
+  # General
+  ###
+
+  #. keypair_name (requiredl): cycloid
+  #+ Name of an existing AWS SSH keypair to use to deploy EC2 instances.
+  keypair_name = "cycloid"
+
+  #. aws_zones (optional): {}
+  #+ To use specific AWS Availability Zones.
+
+  #. extra_tags (optional): {}
+  #+ Dict of extra tags to add on aws resources. format { "foo" = "bar" }.
+
+  ###
+  # Networking
+  ###
+
+  #. vpc_id (required):
+  #+ Amazon VPC id on which create each components.
+  vpc_id = module.vpc.outputs.vpc_id
+
+  #. private_subnets_ids (required, array):
+  #+ Amazon subnets IDs on which create each components.
+  private_subnets_ids = module.vpc.outputs.private_subnets
+
+  #. bastion_sg_allow (optional):
+  #+ Amazon source security group ID which will be allowed to connect on nodes port 22 (SSH).
+  bastion_sg_allow = module.vpc.outputs.bastion_sg_allow
+
+  #. metrics_sg_allow (optional): ""
+  #+ Additionnal security group ID to assign to servers. Goal is to allow monitoring server to query metrics.
+  metrics_sg_allow = "<prometheus-sg>"
+
+  ###
+  # Nodes
+  ###
+
+  #. node_group_name (optional): standard
+  #+ Node group given name.
+  node_group_name = "standard"
+
+  #. node_type (optional): c3.xlarge
+  #+ Type of instance to use for node servers.
+  node_type = "c3.xlarge"
+
+  #. node_count (optional): 1
+  #+ Desired number of node servers.
+  node_count = "1"
+
+  #. node_asg_min_size (optional): 1
+  #+ Minimum number of node servers allowed in the Auto Scaling Group.
+
+  #. node_asg_max_size (optional): 2
+  #+ Maximum number of node servers allowed in the Auto Scaling Group.
+
+  ###
+  # Required (should probably not be touched)
+  ###
+
+  cluster_name                   = local.eks_cluster_name
+  node_iam_instance_profile_name = module.eks.outputs.eks_node_iam_instance_profile_name
+  control_plane_sg_id            = module.eks.outputs.eks_control_plane_sg_id
+  control_plane_endpoint         = module.eks.outputs.eks_control_plane_endpoint
+  control_plane_ca               = module.eks.outputs.eks_control_plane_ca
+}
