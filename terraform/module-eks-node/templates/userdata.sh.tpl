@@ -1,6 +1,6 @@
 #!/bin/bash -v
 
-set -ex
+set -e
 
 function finish {
     if [ $rc != 0 ]; then
