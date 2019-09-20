@@ -11,9 +11,9 @@ image: 'https://raw.githubusercontent.com/cycloid-community-catalog/stack-eks/ma
 type: 'stack'
 technologies:
   - technology: Amazon Elastic Kubernetes Service
-    version: 1.14.6
+    version: 1.14
   - technology: Amazon EKS-Optimized AMI
-    version: 1.14.6
+    version: 1.14
 config:
   # Configuration of the CI pipeline
   pipeline:

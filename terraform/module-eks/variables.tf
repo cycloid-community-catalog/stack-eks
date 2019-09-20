@@ -72,7 +72,7 @@ variable "cluster_name" {
 
 variable "cluster_version" {
   description = "EKS Cluster version to use."
-  default     = "1.14.6"
+  default     = "1.14"
 }
 
 variable "cluster_enabled_log_types" {
