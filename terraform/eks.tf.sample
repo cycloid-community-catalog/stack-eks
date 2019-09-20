@@ -228,7 +228,7 @@ module "eks-node" {
 # }
 
 # resource "aws_route" "external_eks_public" {
-#   for_each = "<EXTERNAL-VPC-PUBLIC-ROUTE-TABLE-IDS>"
+#   for_each = toset("<EXTERNAL-VPC-PUBLIC-ROUTE-TABLE-IDS>")
 
 #   route_table_id            = each.value
 #   destination_cidr_block    = module.vpc.vpc_cidr
@@ -236,7 +236,7 @@ module "eks-node" {
 # }
 
 # resource "aws_route" "external_eks_private" {
-#   for_each = "<EXTERNAL-VPC-PRIVATE-ROUTE-TABLE-IDS>"
+#   for_each = toset("<EXTERNAL-VPC-PRIVATE-ROUTE-TABLE-IDS>")
 
 #   route_table_id            = each.value
 #   destination_cidr_block    = module.vpc.vpc_cidr
@@ -244,7 +244,7 @@ module "eks-node" {
 # }
 
 # resource "aws_route" "eks_external_public" {
-#   for_each = module.vpc.public_route_table_ids
+#   for_each = toset(module.vpc.public_route_table_ids)
 
 #   route_table_id            = each.value
 #   destination_cidr_block    = "<EXTERNAL-VPC-VPC-CIDR>"
@@ -252,7 +252,7 @@ module "eks-node" {
 # }
 
 # resource "aws_route" "eks_external_private" {
-#   for_each = module.vpc.private_route_table_ids
+#   for_each = toset(module.vpc.private_route_table_ids)
 
 #   route_table_id            = each.value
 #   destination_cidr_block    = "<EXTERNAL-VPC-VPC-CIDR>"
