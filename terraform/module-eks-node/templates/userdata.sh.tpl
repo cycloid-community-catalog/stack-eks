@@ -16,6 +16,11 @@ function finish {
         halt -f
       fi
       echo "[halt] keeprunning" >> $LOG_FILE
+    else
+      /usr/local/bin/aws cloudformation signal-resource --stack-name ${signal_stack_name} --logical-resource-id ${signal_resource_id} --unique-id $${AWS_UNIQUE_ID} --region $${AWS_REGION} --status SUCCESS  2>&1 >> $LOG_FILE
+
+      # ensure last return code is 0
+      echo "End" >> $LOG_FILE
     fi
 }
 
@@ -27,8 +32,3 @@ LOG_FILE="/var/log/user-data.log"
     --apiserver-endpoint '${apiserver_endpoint}' \
     --b64-cluster-ca '${b64_cluster_ca}' \
     '${cluster_name}' 2>&1 >> $LOG_FILE
-
-/usr/local/bin/aws cloudformation signal-resource --stack-name ${signal_stack_name} --logical-resource-id ${signal_resource_id} --unique-id $${AWS_UNIQUE_ID} --region $${AWS_REGION} --status SUCCESS  2>&1 >> $LOG_FILE
-
-# ensure last return code is 0
-echo "End" >> $LOG_FILE
