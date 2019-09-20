@@ -18,7 +18,7 @@ resource "aws_security_group" "eks-node" {
     Name                                        = "${var.project}-${var.env}-eks-node-${var.node_group_name}"
     role                                        = "eks-node"
     "kubernetes.io/cluster/${var.cluster_name}" = "owned"
-    "kubernetes.io/node-group/name"             = "${var.node_group_name}"
+    "kubernetes.io/nodegroup/name"             = "${var.node_group_name}"
   })
 }
 
@@ -65,7 +65,7 @@ locals {
       { "Key" = "Name", "Value" = "${var.project}-${var.env}-eks-node-${var.node_group_name}", "PropagateAtLaunch" = "true" },
       { "Key" = "role", "Value" = "eks-node", "PropagateAtLaunch" = "true" },
       { "Key" = "kubernetes.io/cluster/${var.cluster_name}", "Value" = "owned", "PropagateAtLaunch" = "true" },
-      { "Key" = "kubernetes.io/node-group/name", "Value" = "${var.node_group_name}", "PropagateAtLaunch" = "true" }
+      { "Key" = "kubernetes.io/nodegroup/name", "Value" = "${var.node_group_name}", "PropagateAtLaunch" = "true" }
   ])
 }
 
@@ -126,7 +126,7 @@ resource "aws_launch_template" "eks-node" {
     Name                                        = "${var.project}-${var.env}-eks-node-${var.node_group_name}-template"
     role                                        = "eks-node-template"
     "kubernetes.io/cluster/${var.cluster_name}" = "owned"
-    "kubernetes.io/node-group/name"             = "${var.node_group_name}"
+    "kubernetes.io/nodegroup/name"             = "${var.node_group_name}"
   })
 
   tag_specifications {
@@ -136,7 +136,7 @@ resource "aws_launch_template" "eks-node" {
       Name                                        = "${var.project}-${var.env}-eks-node-${var.node_group_name}"
       role                                        = "eks-node"
       "kubernetes.io/cluster/${var.cluster_name}" = "owned"
-      "kubernetes.io/node-group/name"             = "${var.node_group_name}"
+      "kubernetes.io/nodegroup/name"             = "${var.node_group_name}"
     })
   }
   tag_specifications {
@@ -146,7 +146,7 @@ resource "aws_launch_template" "eks-node" {
       Name                                        = "${var.project}-${var.env}-eks-node-${var.node_group_name}"
       role                                        = "eks-node"
       "kubernetes.io/cluster/${var.cluster_name}" = "owned"
-      "kubernetes.io/node-group/name"             = "${var.node_group_name}"
+      "kubernetes.io/nodegroup/name"             = "${var.node_group_name}"
     })
   }
 
