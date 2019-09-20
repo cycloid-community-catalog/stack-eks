@@ -65,7 +65,7 @@ locals {
       { "Key" = "Name", "Value" = "${var.project}-${var.env}-eks-node-${var.node_group_name}", "PropagateAtLaunch" = "true" },
       { "Key" = "role", "Value" = "eks-node", "PropagateAtLaunch" = "true" },
       { "Key" = "kubernetes.io/cluster/${var.cluster_name}", "Value" = "owned", "PropagateAtLaunch" = "true" },
-      { "Key" = "kubernetes.io/cluster/name", "Value" = "${var.node_group_name}", "PropagateAtLaunch" = "true" }
+      { "Key" = "kubernetes.io/node-group/name", "Value" = "${var.node_group_name}", "PropagateAtLaunch" = "true" }
   ])
 }
 
