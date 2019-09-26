@@ -76,6 +76,11 @@ output "control_plane_ca" {
   value       = module.eks.control_plane_ca
 }
 
+output "control_plane_openid_issuer_url" {
+  description = "EKS Cluster OpenID Connect issuer URL."
+  value       = module.eks.control_plane_openid_issuer_url
+}
+
 output "node_iam_role_arn" {
   description = "EKS nodes IAM role ARN."
   value       = module.eks.node_iam_role_arn

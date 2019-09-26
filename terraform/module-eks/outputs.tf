@@ -28,6 +28,11 @@ output "control_plane_ca" {
   value       = aws_eks_cluster.eks-cluster.certificate_authority.0.data
 }
 
+output "control_plane_openid_issuer_url" {
+  description = "EKS Cluster OpenID Connect issuer URL."
+  value       = aws_eks_cluster.example.identity.0.oidc.0.issuer
+}
+
 output "node_iam_role_arn" {
   description = "EKS nodes IAM role ARN."
   value       = aws_iam_role.eks-node.arn
