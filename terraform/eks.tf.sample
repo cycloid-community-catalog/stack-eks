@@ -206,6 +206,12 @@ module "eks-node" {
   #. node_ebs_optimized (optional): false
   #+ Should be true if the instance type is using EBS optimized volumes.
 
+  #. node_launch_template_profile (optional): ondemand
+  #+ EKS nodes profile, can be either `ondemand` or `spot`.
+
+  #. node_spot_price (optional): 0.3
+  #+ EKS nodes spot price when `node_market_type = spot`.
+
   ###
   # Required (should probably not be touched)
   ###

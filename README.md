@@ -83,6 +83,8 @@ In order to run this task, couple elements are required within the infrastructur
 |`node_disk_type`|EKS nodes root disk type.|`-`|`gp2`|`False`|
 |`node_ebs_optimized`|Should be true if the instance type is using EBS optimized volumes.|`-`|`false`|`False`|
 |`node_group_name`|Node group given name.|`-`|`standard`|`False`|
+|`node_launch_template_profile`|EKS nodes profile, can be either `ondemand` or `spot`.|`-`|`ondemand`|`False`|
+|`node_spot_price`|EKS nodes spot price when `node_market_type = spot`.|`-`|`0.3`|`False`|
 |`node_type`|Type of instance to use for node servers.|`-`|`c3.xlarge`|`False`|
 |`private_subnets`|The private subnets for the VPC.|`list`|`["10.8.0.0/24", "10.8.2.0/24", "10.8.4.0/24"]`|`False`|
 |`private_subnets_ids`|Amazon subnets IDs on which create each components.|`array`|``|`True`|

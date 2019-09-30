@@ -57,6 +57,19 @@ resource "aws_security_group_rule" "eks-cluster-ingress-node-https" {
 #
 
 locals {
+  default_node_launch_template_id = {
+    "spot"     = aws_launch_template.eks-node-spot.id
+    "ondemand" = aws_launch_template.eks-node-ondemand.id
+  }
+
+  default_node_launch_template_latest_version = {
+    "spot"     = aws_launch_template.eks-node-spot.latest_version
+    "ondemand" = aws_launch_template.eks-node-ondemand.latest_version
+  }
+
+  node_launch_template_id             = var.node_launch_template_id != "" ? var.node_launch_template_id : local.default_node_launch_template_id[var.node_launch_template_profile]
+  node_launch_template_latest_version = var.node_launch_template_latest_version != "" ? var.node_launch_template_latest_version : local.default_node_launch_template_latest_version[var.node_launch_template_profile]
+
   node_tags = concat([
     for tag in keys(local.merged_tags) :
     { "Key" = tag, "Value" = local.merged_tags[tag], "PropagateAtLaunch" = "true" }
@@ -64,6 +77,7 @@ locals {
     [
       { "Key" = "Name", "Value" = "${var.project}-${var.env}-eks-node-${var.node_group_name}", "PropagateAtLaunch" = "true" },
       { "Key" = "role", "Value" = "eks-node", "PropagateAtLaunch" = "true" },
+      { "Key" = "Spot", "Value" = "%{ if var.node_launch_template_profile == "spot" }true%{ else }false%{ endif }", "PropagateAtLaunch" = "true" },
       { "Key" = "kubernetes.io/cluster/${var.cluster_name}", "Value" = "owned", "PropagateAtLaunch" = "true" },
       { "Key" = "kubernetes.io/nodegroup/name", "Value" = "${var.node_group_name}", "PropagateAtLaunch" = "true" }
   ])
@@ -83,85 +97,6 @@ data "template_file" "user-data-eks-node" {
   }
 }
 
-resource "aws_launch_template" "eks-node" {
-  name_prefix   = "${var.project}-${var.env}-eks-node-${var.node_group_name}-version_"
-  image_id      = data.aws_ami.eks-node.id
-  instance_type = var.node_type
-  user_data     = base64encode(data.template_file.user-data-eks-node.rendered)
-  key_name      = var.keypair_name
-
-  /*
-  instance_market_options {
-    market_type = "spot"
-
-    spot_options {
-      spot_instance_type = "one-time"
-      max_price          = "${var.node_spot_price}"
-    }
-  }
-  */
-
-  network_interfaces {
-    associate_public_ip_address = var.node_associate_public_ip_address
-    delete_on_termination       = true
-
-    security_groups = compact(
-      [
-        aws_security_group.eks-node.id,
-        var.bastion_sg_allow,
-        var.metrics_sg_allow,
-      ],
-    )
-  }
-
-  lifecycle {
-    create_before_destroy = true
-  }
-
-  iam_instance_profile {
-    name = var.node_iam_instance_profile_name
-  }
-
-  tags = merge(local.merged_tags, {
-    Name                                        = "${var.project}-${var.env}-eks-node-${var.node_group_name}-template"
-    role                                        = "eks-node-template"
-    "kubernetes.io/cluster/${var.cluster_name}" = "owned"
-    "kubernetes.io/nodegroup/name"             = "${var.node_group_name}"
-  })
-
-  tag_specifications {
-    resource_type = "instance"
-
-    tags = merge(local.merged_tags, {
-      Name                                        = "${var.project}-${var.env}-eks-node-${var.node_group_name}"
-      role                                        = "eks-node"
-      "kubernetes.io/cluster/${var.cluster_name}" = "owned"
-      "kubernetes.io/nodegroup/name"             = "${var.node_group_name}"
-    })
-  }
-  tag_specifications {
-    resource_type = "volume"
-
-    tags = merge(local.merged_tags, {
-      Name                                        = "${var.project}-${var.env}-eks-node-${var.node_group_name}"
-      role                                        = "eks-node"
-      "kubernetes.io/cluster/${var.cluster_name}" = "owned"
-      "kubernetes.io/nodegroup/name"             = "${var.node_group_name}"
-    })
-  }
-
-  block_device_mappings {
-    device_name = "/dev/xvda"
-
-    ebs {
-      volume_size           = var.node_disk_size
-      volume_type           = var.node_disk_type
-      delete_on_termination = true
-    }
-  }
-  ebs_optimized = var.node_ebs_optimized
-}
-
 resource "aws_cloudformation_stack" "eks-node" {
   name = "${var.project}-${var.env}-eks-node-${var.node_group_name}"
 
@@ -177,19 +112,21 @@ resource "aws_cloudformation_stack" "eks-node" {
         "AvailabilityZones": ${jsonencode(local.aws_availability_zones)},
         "VPCZoneIdentifier": ${jsonencode(var.private_subnets_ids)},
         "LaunchTemplate": {
-            "LaunchTemplateId": "${aws_launch_template.eks-node.id}",
-            "Version" : "${aws_launch_template.eks-node.latest_version}"
+            "LaunchTemplateId": "${local.node_launch_template_id}",
+            "Version" : "${local.node_launch_template_latest_version}"
         },
         "DesiredCapacity": "${var.node_count}",
         "MinSize": "${var.node_asg_min_size}",
         "MaxSize": "${var.node_asg_max_size}",
         "TerminationPolicies": ["OldestLaunchConfiguration", "NewestInstance"],
+        "HealthCheckType": "EC2",
+        "HealthCheckGracePeriod": 600,
         "Tags" : ${jsonencode(local.node_tags)}
       },
       "UpdatePolicy": {
         "AutoScalingRollingUpdate": {
-          "MinInstancesInService": "${var.node_update_min_in_service}",
-          "MinSuccessfulInstancesPercent": "50",
+          "MinInstancesInService": "${var.node_launch_template_profile == "spot" ? 0 : var.node_update_min_in_service}",
+          "MinSuccessfulInstancesPercent": "${var.node_launch_template_profile == "spot" ? 50 : 100}",
           "SuspendProcesses": ["ScheduledActions"],
           "MaxBatchSize": "1",
           "PauseTime": "PT8M",

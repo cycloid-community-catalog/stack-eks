@@ -109,6 +109,24 @@ variable "node_group_name" {
   default     = "standard"
 }
 
+variable "node_launch_template_profile" {
+  description = "EKS nodes profile, can be either `ondemand` or `spot`."
+  default = "ondemand"
+}
+
+variable "node_launch_template_id" {
+  default = ""
+}
+
+variable "node_launch_template_latest_version" {
+  default = ""
+}
+
+variable "node_spot_price" {
+  description = "EKS nodes spot price when `node_market_type = spot`."
+  default     = "0.3"
+}
+
 variable "node_type" {
   description = "EKS nodes instance type."
   default     = "c3.xlarge"
