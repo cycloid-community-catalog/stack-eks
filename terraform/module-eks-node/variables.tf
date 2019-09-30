@@ -138,3 +138,18 @@ variable "node_associate_public_ip_address" {
   description = "Should be true if EIP address should be associated to EKS nodes."
   default     = false
 }
+
+variable "node_disk_type" {
+  description = "EKS nodes root disk type."
+  default     = "gp2"
+}
+
+variable "node_disk_size" {
+  description = "EKS nodes root disk size."
+  default     = "60"
+}
+
+variable "node_ebs_optimized" {
+  description = "Should be true if the instance type is using EBS optimized volumes."
+  default     = false
+}

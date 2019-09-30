@@ -197,6 +197,15 @@ module "eks-node" {
   #. node_asg_max_size (optional): 2
   #+ Maximum number of node servers allowed in the Auto Scaling Group.
 
+  #. node_disk_type (optional): gp2
+  #+ EKS nodes root disk type.
+
+  #. node_disk_size (optional): 60
+  #+ EKS nodes root disk size.
+
+  #. node_ebs_optimized (optional): false
+  #+ Should be true if the instance type is using EBS optimized volumes.
+
   ###
   # Required (should probably not be touched)
   ###

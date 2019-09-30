@@ -150,16 +150,16 @@ resource "aws_launch_template" "eks-node" {
     })
   }
 
-  # block_device_mappings {
-  #   device_name = "xvda"
+  block_device_mappings {
+    device_name = "xvda"
 
-  #   ebs {
-  #     volume_size           = var.node_disk_size
-  #     volume_type           = var.node_disk_type
-  #     delete_on_termination = true
-  #   }
-  # }
-  # ebs_optimized = var.node_ebs_optimized
+    ebs {
+      volume_size           = var.node_disk_size
+      volume_type           = var.node_disk_type
+      delete_on_termination = true
+    }
+  }
+  ebs_optimized = var.node_ebs_optimized
 }
 
 resource "aws_cloudformation_stack" "eks-node" {
