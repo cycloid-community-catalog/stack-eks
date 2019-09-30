@@ -30,7 +30,7 @@ output "control_plane_ca" {
 
 output "control_plane_openid_issuer_url" {
   description = "EKS Cluster OpenID Connect issuer URL."
-  value       = aws_eks_cluster.example.identity.0.oidc.0.issuer
+  value       = aws_eks_cluster.eks-cluster.identity.0.oidc.0.issuer
 }
 
 output "node_iam_role_arn" {
