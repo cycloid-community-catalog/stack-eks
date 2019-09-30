@@ -118,6 +118,9 @@ module "eks" {
   #. cluster_enabled_log_types (optional): ["api", "audit", "authenticator", "controllerManager", "scheduler"]
   #+ EKS cluster enabled log types.
 
+  #. control_plane_allowed_ips (optional): [] 
+  #+ Allow Inbound IP CIDRs to access the Kubernetes API.
+
   ###
   # Required (should probably not be touched)
   ###
@@ -181,11 +184,11 @@ module "eks-node" {
   node_group_name = "standard"
 
   #. node_type (optional): c3.xlarge
-  #+ Type of instance to use for node servers
+  #+ Type of instance to use for node servers.
   node_type = "c3.xlarge"
 
   #. node_count (optional): 1
-  #+ Desired number of node servers
+  #+ Desired number of node servers.
   node_count = "1"
 
   #. node_asg_min_size (optional): 1
@@ -193,6 +196,15 @@ module "eks-node" {
 
   #. node_asg_max_size (optional): 2
   #+ Maximum number of node servers allowed in the Auto Scaling Group.
+
+  #. node_disk_type (optional): gp2
+  #+ EKS nodes root disk type.
+
+  #. node_disk_size (optional): 60
+  #+ EKS nodes root disk size.
+
+  #. node_ebs_optimized (optional): false
+  #+ Should be true if the instance type is using EBS optimized volumes.
 
   ###
   # Required (should probably not be touched)
