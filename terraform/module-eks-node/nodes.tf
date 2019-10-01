@@ -129,6 +129,10 @@ resource "aws_cloudformation_stack" "eks-node" {
         "TerminationPolicies": ["OldestLaunchConfiguration", "NewestInstance"],
         "HealthCheckType": "EC2",
         "HealthCheckGracePeriod": 600,
+        "MetricsCollection": [{
+          "Granularity": "1Minute",
+          "Metrics": ["GroupMinSize", "GroupMaxSize", "GroupDesiredCapacity", "GroupInServiceInstances", "GroupPendingInstances", "GroupStandbyInstances", "GroupTerminatingInstances", "GroupTotalInstances"]
+        }],
         "Tags" : ${jsonencode(local.node_tags)}
       },
       "UpdatePolicy": {
