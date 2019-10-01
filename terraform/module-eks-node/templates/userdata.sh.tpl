@@ -31,4 +31,5 @@ LOG_FILE="/var/log/user-data.log"
 /etc/eks/bootstrap.sh \
     --apiserver-endpoint '${apiserver_endpoint}' \
     --b64-cluster-ca '${b64_cluster_ca}' \
-    '${cluster_name}' 2>&1 >> $LOG_FILE
+    '${cluster_name}' \
+    ${bootstrap_args} 2>&1 >> $LOG_FILE
