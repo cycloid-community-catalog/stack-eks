@@ -212,6 +212,9 @@ module "eks-node" {
   #. node_spot_price (optional): 0.3
   #+ EKS nodes spot price when `node_market_type = spot`.
 
+  #. node_enable_cluster_autoscaler_tags (optional): false
+  #+ Should be true to add Cluster Autoscaler ASG tags.
+
   ###
   # Required (should probably not be touched)
   ###

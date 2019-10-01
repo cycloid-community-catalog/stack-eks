@@ -171,3 +171,15 @@ variable "node_ebs_optimized" {
   description = "Should be true if the instance type is using EBS optimized volumes."
   default     = false
 }
+
+locals {
+  cluster_autoscaler_tags = {
+    "k8s.io/cluster-autoscaler/${var.cluster_name}" = "owned",
+    "k8s.io/cluster-autoscaler/enabled"             = "true"
+  }
+}
+
+variable "node_enable_cluster_autoscaler_tags" {
+  description = "Should be true to add Cluster Autoscaler ASG tags."
+  default     = false
+}

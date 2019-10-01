@@ -70,9 +70,10 @@ locals {
   node_launch_template_id             = var.node_launch_template_id != "" ? var.node_launch_template_id : local.default_node_launch_template_id[var.node_launch_template_profile]
   node_launch_template_latest_version = var.node_launch_template_latest_version != "" ? var.node_launch_template_latest_version : local.default_node_launch_template_latest_version[var.node_launch_template_profile]
 
-  node_tags = concat([
-    for tag in keys(local.merged_tags) :
-    { "Key" = tag, "Value" = local.merged_tags[tag], "PropagateAtLaunch" = "true" }
+  node_tags = concat(
+    [
+      for tag in keys(local.merged_tags) :
+      { "Key" = tag, "Value" = local.merged_tags[tag], "PropagateAtLaunch" = "true" }
     ],
     [
       { "Key" = "Name", "Value" = "${var.project}-${var.env}-eks-node-${var.node_group_name}", "PropagateAtLaunch" = "true" },
@@ -80,7 +81,13 @@ locals {
       { "Key" = "Spot", "Value" = "%{ if var.node_launch_template_profile == "spot" }true%{ else }false%{ endif }", "PropagateAtLaunch" = "true" },
       { "Key" = "kubernetes.io/cluster/${var.cluster_name}", "Value" = "owned", "PropagateAtLaunch" = "true" },
       { "Key" = "kubernetes.io/nodegroup/name", "Value" = "${var.node_group_name}", "PropagateAtLaunch" = "true" }
-  ])
+    ],
+    [
+      for tag in keys(local.cluster_autoscaler_tags) :
+      { "Key" = tag, "Value" = local.cluster_autoscaler_tags[tag], "PropagateAtLaunch" = "false" }
+      if var.node_enable_cluster_autoscaler_tags
+    ]
+  )
 }
 
 # More information: https://docs.aws.amazon.com/eks/latest/userguide/launch-workers.html

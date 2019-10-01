@@ -82,6 +82,7 @@ In order to run this task, couple elements are required within the infrastructur
 |`node_disk_size`|EKS nodes root disk size.|`-`|`60`|`False`|
 |`node_disk_type`|EKS nodes root disk type.|`-`|`gp2`|`False`|
 |`node_ebs_optimized`|Should be true if the instance type is using EBS optimized volumes.|`-`|`false`|`False`|
+|`node_enable_cluster_autoscaler_tags`|hould be true to add Cluster Autoscaler ASG tags.|`bool`|`false`|`False`|
 |`node_group_name`|Node group given name.|`-`|`standard`|`False`|
 |`node_launch_template_profile`|EKS nodes profile, can be either `ondemand` or `spot`.|`-`|`ondemand`|`False`|
 |`node_spot_price`|EKS nodes spot price when `node_market_type = spot`.|`-`|`0.3`|`False`|
