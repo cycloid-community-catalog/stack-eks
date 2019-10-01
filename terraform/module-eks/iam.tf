@@ -69,6 +69,35 @@ resource "aws_iam_role_policy_attachment" "eks-node-AmazonEC2ContainerRegistryRe
   role       = aws_iam_role.eks-node.name
 }
 
+data "aws_iam_policy_document" "eks-node-cluster-autoscaler" {
+  statement {
+    actions = [
+      "autoscaling:DescribeAutoScalingGroups",
+      "autoscaling:DescribeAutoScalingInstances",
+      "autoscaling:DescribeLaunchConfigurations",
+      "autoscaling:DescribeTags",
+      "autoscaling:SetDesiredCapacity",
+      "autoscaling:TerminateInstanceInAutoScalingGroup",
+      "ec2:DescribeLaunchTemplateVersions"
+    ]
+
+    effect    = "Allow"
+    resources = ["*"]
+  }
+}
+
+resource "aws_iam_policy" "eks-node-cluster-autoscaler" {
+  name        = "${var.project}-${var.env}-eks-node-cluster-autoscaler"
+  path        = "/"
+  description = "EKS nodes Cluster Autoscaler"
+  policy      = data.aws_iam_policy_document.eks-node-cluster-autoscaler.json
+}
+
+resource "aws_iam_role_policy_attachment" "eks-node-cluster-autoscaler" {
+  policy_arn = aws_iam_policy.eks-node-cluster-autoscaler.arn
+  role       = aws_iam_role.eks-node.name
+}
+
 resource "aws_iam_instance_profile" "eks-node" {
   name = "${var.project}-${var.env}-eks-node"
   role = aws_iam_role.eks-node.name
