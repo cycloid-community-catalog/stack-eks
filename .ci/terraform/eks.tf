@@ -194,7 +194,7 @@ module "eks-node" {
   #. node_asg_min_size (optional): 1
   #+ Minimum number of node servers allowed in the Auto Scaling Group.
 
-  #. node_asg_max_size (optional): 2
+  #. node_asg_max_size (optional): 10
   #+ Maximum number of node servers allowed in the Auto Scaling Group.
 
   #. node_disk_type (optional): gp2

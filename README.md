@@ -76,7 +76,7 @@ In order to run this task, couple elements are required within the infrastructur
 |`extra_tags`|Dict of extra tags to add on aws resources. format { "foo" = "bar" }.|`-`|`{}`|`False`|
 |`keypair_name`|Name of an existing AWS SSH keypair to use to deploy EC2 instances.|`-`|`cycloid`|`False`|
 |`metrics_sg_allow`|Additionnal security group ID to assign to servers. Goal is to allow monitoring server to query metrics. Make sure the prometheus VPC is peered.|`-`|`""`|`False`|
-|`node_asg_max_size`|Maximum number of node servers allowed in the Auto Scaling Group.|`-`|`2`|`False`|
+|`node_asg_max_size`|Maximum number of node servers allowed in the Auto Scaling Group.|`-`|`10`|`False`|
 |`node_asg_min_size`|Minimum number of node servers allowed in the Auto Scaling Group.|`-`|`1`|`False`|
 |`node_count`|Desired number of node servers.|`-`|`1`|`False`|
 |`node_disk_size`|EKS nodes root disk size.|`-`|`60`|`False`|

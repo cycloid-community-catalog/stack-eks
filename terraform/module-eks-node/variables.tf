@@ -144,7 +144,7 @@ variable "node_asg_min_size" {
 
 variable "node_asg_max_size" {
   description = "EKS nodes Auto Scaling Group maximum size."
-  default     = 2
+  default     = 10
 }
 
 variable "node_update_min_in_service" {
