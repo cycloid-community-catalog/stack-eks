@@ -10,6 +10,6 @@ resource "aws_route53_zone" "vpc_private" {
   })
 
   lifecycle {
-    ignore_changes = ["vpc"]
+    ignore_changes = [vpc]
   }
 }
