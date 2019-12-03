@@ -76,13 +76,16 @@ In order to run this task, couple elements are required within the infrastructur
 |`extra_tags`|Dict of extra tags to add on aws resources. format { "foo" = "bar" }.|`-`|`{}`|`False`|
 |`keypair_name`|Name of an existing AWS SSH keypair to use to deploy EC2 instances.|`-`|`cycloid`|`False`|
 |`metrics_sg_allow`|Additionnal security group ID to assign to servers. Goal is to allow monitoring server to query metrics. Make sure the prometheus VPC is peered.|`-`|`""`|`False`|
-|`node_asg_max_size`|Maximum number of node servers allowed in the Auto Scaling Group.|`-`|`2`|`False`|
+|`node_asg_max_size`|Maximum number of node servers allowed in the Auto Scaling Group.|`-`|`10`|`False`|
 |`node_asg_min_size`|Minimum number of node servers allowed in the Auto Scaling Group.|`-`|`1`|`False`|
 |`node_count`|Desired number of node servers.|`-`|`1`|`False`|
 |`node_disk_size`|EKS nodes root disk size.|`-`|`60`|`False`|
 |`node_disk_type`|EKS nodes root disk type.|`-`|`gp2`|`False`|
 |`node_ebs_optimized`|Should be true if the instance type is using EBS optimized volumes.|`-`|`false`|`False`|
+|`node_enable_cluster_autoscaler_tags`|hould be true to add Cluster Autoscaler ASG tags.|`bool`|`false`|`False`|
 |`node_group_name`|Node group given name.|`-`|`standard`|`False`|
+|`node_launch_template_profile`|EKS nodes profile, can be either `ondemand` or `spot`.|`-`|`ondemand`|`False`|
+|`node_spot_price`|EKS nodes spot price when `node_market_type = spot`.|`-`|`0.3`|`False`|
 |`node_type`|Type of instance to use for node servers.|`-`|`c3.xlarge`|`False`|
 |`private_subnets`|The private subnets for the VPC.|`list`|`["10.8.0.0/24", "10.8.2.0/24", "10.8.4.0/24"]`|`False`|
 |`private_subnets_ids`|Amazon subnets IDs on which create each components.|`array`|``|`True`|

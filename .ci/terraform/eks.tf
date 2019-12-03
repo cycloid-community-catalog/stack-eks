@@ -194,7 +194,7 @@ module "eks-node" {
   #. node_asg_min_size (optional): 1
   #+ Minimum number of node servers allowed in the Auto Scaling Group.
 
-  #. node_asg_max_size (optional): 2
+  #. node_asg_max_size (optional): 10
   #+ Maximum number of node servers allowed in the Auto Scaling Group.
 
   #. node_disk_type (optional): gp2
@@ -205,6 +205,15 @@ module "eks-node" {
 
   #. node_ebs_optimized (optional): false
   #+ Should be true if the instance type is using EBS optimized volumes.
+
+  #. node_launch_template_profile (optional): ondemand
+  #+ EKS nodes profile, can be either `ondemand` or `spot`.
+
+  #. node_spot_price (optional): 0.3
+  #+ EKS nodes spot price when `node_market_type = spot`.
+
+  #. node_enable_cluster_autoscaler_tags (optional): false
+  #+ Should be true to add Cluster Autoscaler ASG tags.
 
   ###
   # Required (should probably not be touched)

@@ -14,7 +14,7 @@ MAPROLES
   }
 
   depends_on = [
-    "aws_iam_role.eks-node",
-    "aws_eks_cluster.eks-cluster",
+    aws_iam_role.eks-node,
+    aws_eks_cluster.eks-cluster,
   ]
 }

@@ -6,3 +6,8 @@
 .terraform/
 .env
 .vault-password
+
+# Testing files
+terraform/eks.tf
+terraform/terraform.tfvars
+terraform/tmp_backend.tf

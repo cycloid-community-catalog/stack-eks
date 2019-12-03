@@ -109,6 +109,24 @@ variable "node_group_name" {
   default     = "standard"
 }
 
+variable "node_launch_template_profile" {
+  description = "EKS nodes profile, can be either `ondemand` or `spot`."
+  default = "ondemand"
+}
+
+variable "node_launch_template_id" {
+  default = ""
+}
+
+variable "node_launch_template_latest_version" {
+  default = ""
+}
+
+variable "node_spot_price" {
+  description = "EKS nodes spot price when `node_market_type = spot`."
+  default     = "0.3"
+}
+
 variable "node_type" {
   description = "EKS nodes instance type."
   default     = "c3.xlarge"
@@ -126,7 +144,7 @@ variable "node_asg_min_size" {
 
 variable "node_asg_max_size" {
   description = "EKS nodes Auto Scaling Group maximum size."
-  default     = 2
+  default     = 10
 }
 
 variable "node_update_min_in_service" {
@@ -151,5 +169,17 @@ variable "node_disk_size" {
 
 variable "node_ebs_optimized" {
   description = "Should be true if the instance type is using EBS optimized volumes."
+  default     = false
+}
+
+locals {
+  cluster_autoscaler_tags = {
+    "k8s.io/cluster-autoscaler/${var.cluster_name}" = "owned",
+    "k8s.io/cluster-autoscaler/enabled"             = "true"
+  }
+}
+
+variable "node_enable_cluster_autoscaler_tags" {
+  description = "Should be true to add Cluster Autoscaler ASG tags."
   default     = false
 }
