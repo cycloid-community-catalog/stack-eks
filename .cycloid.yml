@@ -1,6 +1,7 @@
 # Configuration of the CI pipeline
 name: 'Amazon EKS'
 canonical: 'stack-eks'
+status: 'public'
 description: 'Used to deploy an Amazon Elastic Kubernetes Service cluster with one or more node groups.'
 keywords:
   - 'kubernetes'
