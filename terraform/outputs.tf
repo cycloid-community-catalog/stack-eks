@@ -76,16 +76,6 @@ output "control_plane_openid_issuer_url" {
   value       = module.eks.control_plane_openid_issuer_url
 }
 
-output "node_iam_role_arn" {
-  description = "EKS nodes IAM role ARN."
-  value       = module.eks.node_iam_role_arn
-}
-
-output "node_iam_instance_profile_name" {
-  description = "EKS nodes IAM instance profile name."
-  value       = module.eks.node_iam_instance_profile_name
-}
-
 output "kubeconfig" {
   description = "Kubernetes config to connect to the EKS cluster."
   value       = module.eks.kubeconfig

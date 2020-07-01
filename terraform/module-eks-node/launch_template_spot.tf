@@ -36,7 +36,7 @@ resource "aws_launch_template" "eks-node-spot" {
   }
 
   iam_instance_profile {
-    name = var.node_iam_instance_profile_name
+    name = aws_iam_instance_profile.eks-node.name
   }
 
   tags = merge(local.merged_tags, {

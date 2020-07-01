@@ -17,6 +17,8 @@ locals {
   aws_availability_zones = length(var.aws_zones) > 0 ? var.aws_zones : data.aws_availability_zones.available.names
 }
 
+data "aws_caller_identity" "current" {}
+
 variable "project" {
   description = "Cycloid project name."
 }
@@ -99,10 +101,6 @@ variable "control_plane_ca" {
 #
 # Nodes
 #
-
-variable "node_iam_instance_profile_name" {
-  description = "EKS nodes IAM instance profile name."
-}
 
 variable "node_group_name" {
   description = "EKS nodes group given name."

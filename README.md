@@ -112,6 +112,4 @@ In order to run this task, couple elements are required within the infrastructur
 | `control_plane_endpoint` | EKS Cluster endpoint. |
 | `control_plane_ca` | EKS Cluster certificate authority. |
 | `control_plane_openid_issuer_url` | EKS Cluster OpenID Connect issuer URL. |
-| `node_iam_role_arn` | EKS nodes IAM role ARN. |
-| `node_iam_instance_profile_name` | EKS nodes IAM instance profile name. |
 | `kubeconfig` | Kubernetes config to connect to the EKS cluster. |
